@@ -457,8 +457,7 @@ class Dense_rain(nn.Module):
     def forward(self, x, label_d):
         ## 256x256
         label_d11 = torch.FloatTensor(1)
-        #label_d11 = Variable(label_d11.cuda())
-        label_d11 = Variable(label_d11.to('cpu'))
+        label_d11 = Variable(label_d11.cuda())
         shape_out = x.data.size()
         sizePatchGAN = shape_out[3]
 
@@ -466,22 +465,17 @@ class Dense_rain(nn.Module):
         label_result=float(label_d.data.cpu().float().numpy())
 
         label_d11.data.resize_((1, 1, sizePatchGAN, sizePatchGAN)).fill_(label_result)
-        #raise Exception(f"x {x}\n shape of x {x.size()}\n label_d11 {label_d11}\n shape {label_d11.size()}")
         if len(list(label_d11.size())) == 1:
-            # if label_d11.size(1) != 512:
-            # label_d11 = label_d11.unsqueeze(1).expand(-1, 512)
-           label_d11 = label_d11.unsqueeze(1).unsqueeze(2).unsqueeze(3).expand(-1, 3, 512, 512)
-
+          label_d11 = label_d11.unsqueeze(1).unsqueeze(2).unsqueeze(3).expand(-1, 3, 512, 512)
         x1=torch.cat([x,label_d11],1)
-       
+
         x3=self.dense2(x)
         x2=self.dense1(x)
         x1=self.dense0(x)
 
 
         label_d11 = torch.FloatTensor(1)
-        #label_d11 = Variable(label_d11.cuda())
-        label_d11 = Variable(label_d11.to('cpu'))
+        label_d11 = Variable(label_d11.cuda())
         shape_out = x3.data.size()
         sizePatchGAN = shape_out[3]
 
@@ -490,8 +484,7 @@ class Dense_rain(nn.Module):
 
         label_d11.data.resize_((1, 8, sizePatchGAN, sizePatchGAN)).fill_(label_result)
         if len(list(label_d11.size())) == 1:
-        	label_d11 = label_d11.unsqueeze(1).unsqueeze(2).unsqueeze(3).expand(-1, 8, 512, 512)
-
+          label_d11 = label_d11.unsqueeze(1).unsqueeze(2).unsqueeze(3).expand(-1, 8, 512, 512)
         x8=torch.cat([x1,x,x2,x3,label_d11],1)
         # x8=torch.cat([x1,x,x2,x3],1)
         # print(x8.size())
